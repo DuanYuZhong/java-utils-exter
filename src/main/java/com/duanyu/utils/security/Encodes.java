@@ -1,6 +1,6 @@
 package com.duanyu.utils.security;
 
-import com.box.util.common.Exceptions;
+import com.duanyu.utils.exception.Exceptions;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
