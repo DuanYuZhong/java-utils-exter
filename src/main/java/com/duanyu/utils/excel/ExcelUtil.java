@@ -3,7 +3,6 @@ package com.duanyu.utils.excel;
 import com.duanyu.utils.DateUtils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.POIXMLDocument;
 import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -16,6 +15,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.poifs.filesystem.DocumentFactoryHelper;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -53,7 +53,7 @@ import java.util.Map;
  * 需要导出的实体对象只需简单配置注解就能实现灵活导出,通过注解您可以方便实现下面功能:
  * 1.实体属性配置了注解就能导出到excel中,每个属性都对应一列.
  * 2.列名称可以通过注解配置.
- * 3.导出到哪一列可以通过注解配置.
+ * 3.导出到哪一列可以通过注解配置
  * 4.鼠标移动到该列时提示信息可以通过注解配置.
  * 5.用注解设置只能下拉选择不能随意填写功能.
  * 6.用注解设置是否只导出标题而不导出内容,这在导出内容作为模板以供用户填写时比较实用.
@@ -78,7 +78,7 @@ public class ExcelUtil<T> {
         if (POIFSFileSystem.hasPOIFSHeader(in)) {
             return new HSSFWorkbook(in);
         }
-        if (POIXMLDocument.hasOOXMLHeader(in)) {
+        if (DocumentFactoryHelper.hasOOXMLHeader(in)) {
             return new XSSFWorkbook(OPCPackage.open(in));
         }
         throw new IllegalArgumentException("你的excel版本目前poi解析不了");
@@ -86,8 +86,6 @@ public class ExcelUtil<T> {
 
     /**
      * 导入excel we don't command big data import using excel
-     *
-     * @throws IOException
      */
     public List<T> importExcel(String sheetName, InputStream input) throws Exception {
         int maxCol = 0;
@@ -133,7 +131,7 @@ public class ExcelUtil<T> {
                     int cellNum = maxCol;
                     T entity = null;
                     for (int j = 0; j <= cellNum; j++) {
-                        if(row == null){
+                        if (row == null) {
                             continue;
                         }
                         Cell cell = row.getCell(j);
@@ -194,12 +192,9 @@ public class ExcelUtil<T> {
 
     /**
      * 处理cell中特殊的数据类型 特别是日期类型
-     *
-     * @param cell
-     * @return
      */
     private String parseExcel(Cell cell, int decimalLength) {
-        String result = new String();
+        String result;
         switch (cell.getCellType()) {
             // 数字类型
             case HSSFCell.CELL_TYPE_NUMERIC:
@@ -360,7 +355,7 @@ public class ExcelUtil<T> {
                                 cell.setCellValue("");
                             } else {
                                 if (field.getType() == Date.class) {
-                                    cell.setCellValue(DateUtil.formatDateTime((Date) o, attr.dateFormat()));
+                                    cell.setCellValue(DateUtils.format((Date) o, attr.dateFormat()));
                                 } else {
                                     // 如果数据存在就填入,不存在填入空格.
                                     cell.setCellValue(String.valueOf(o));
@@ -393,12 +388,9 @@ public class ExcelUtil<T> {
     /**
      * 对list数据源将其里面的数据导入到excel表单
      *
-     * @param sheetName
-     *            工作表的名称
-     * @param sheetSize
-     *            每个sheet中数据的行数,此数值必须小于65536
-     * @param output
-     *            java输出流
+     * @param sheetName 工作表的名称
+     * @param sheetSize 每个sheet中数据的行数,此数值必须小于65536
+     * @param output    java输出流
      */
     public boolean exportExcel(List<T> list, String sheetName, OutputStream output) {
         List<T>[] lists = new ArrayList[1];
@@ -412,8 +404,6 @@ public class ExcelUtil<T> {
 
     /**
      * 将EXCEL中A,B,C,D,E列映射成0,1,2,3
-     *
-     * @param col
      */
     public static int getExcelCol(String col) {
         col = col.toUpperCase();
@@ -464,18 +454,12 @@ public class ExcelUtil<T> {
     /**
      * 设置某些列的值只能输入预制的数据,显示下拉框.
      *
-     * @param sheet
-     *            要设置的sheet.
-     * @param textlist
-     *            下拉框显示的内容
-     * @param firstRow
-     *            开始行
-     * @param endRow
-     *            结束行
-     * @param firstCol
-     *            开始列
-     * @param endCol
-     *            结束列
+     * @param sheet    要设置的sheet.
+     * @param textlist 下拉框显示的内容
+     * @param firstRow 开始行
+     * @param endRow   结束行
+     * @param firstCol 开始列
+     * @param endCol   结束列
      * @return 设置好的sheet.
      */
     public static Sheet setHSSFValidation(Sheet sheet, String[] textlist, int firstRow, int endRow, int firstCol,
@@ -535,11 +519,10 @@ public class ExcelUtil<T> {
 
     /**
      * 导入excel表
-     * @param filePath 路径名
+     *
+     * @param filePath  路径名
      * @param sheetName 表头名
-     * @param clazz 实体类
-     * @param <T>
-     * @return
+     * @param clazz     实体类
      */
     public static <T> List<T> importExcel(String filePath, String sheetName, Class<T> clazz) {
         File file = new File(filePath);
@@ -562,7 +545,7 @@ public class ExcelUtil<T> {
     public static <T> boolean exportExcel(List<T> list, String filePath, Class<T> clazz) {
         ExcelUtil<T> excelUtil = new ExcelUtil<>(clazz);
         String fileName = filePath.substring(0, filePath.lastIndexOf("."));
-        File exprotFile = new File(fileName+"_error.xls");
+        File exprotFile = new File(fileName + "_error.xls");
 
         OutputStream output = null;
         try {
