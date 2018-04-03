@@ -3,6 +3,7 @@ package com.duanyu.utils.excel;
 import com.duanyu.utils.DateUtils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.POIXMLDocument;
 import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -15,7 +16,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.poifs.filesystem.DocumentFactoryHelper;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -78,7 +78,7 @@ public class ExcelUtil<T> {
         if (POIFSFileSystem.hasPOIFSHeader(in)) {
             return new HSSFWorkbook(in);
         }
-        if (DocumentFactoryHelper.hasOOXMLHeader(in)) {
+        if (POIXMLDocument.hasOOXMLHeader(in)) {
             return new XSSFWorkbook(OPCPackage.open(in));
         }
         throw new IllegalArgumentException("你的excel版本目前poi解析不了");
@@ -387,11 +387,8 @@ public class ExcelUtil<T> {
 
     /**
      * 对list数据源将其里面的数据导入到excel表单
-     *
-     * @param sheetName 工作表的名称
-     * @param sheetSize 每个sheet中数据的行数,此数值必须小于65536
-     * @param output    java输出流
      */
+
     public boolean exportExcel(List<T> list, String sheetName, OutputStream output) {
         List<T>[] lists = new ArrayList[1];
         lists[0] = list;
