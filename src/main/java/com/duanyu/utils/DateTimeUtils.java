@@ -10,7 +10,7 @@ import java.util.Date;
 
 /**
  * 基于新版LocalDateTime的时间工具类
- * @author forip on 2018/2/10.
+ * @author Carter on 2018/2/10.
  */
 public class DateTimeUtils {
 
