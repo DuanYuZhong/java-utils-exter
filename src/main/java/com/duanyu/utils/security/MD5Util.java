@@ -3,80 +3,67 @@ package com.duanyu.utils.security;
 import java.security.MessageDigest;
 
 /**
- * 
- * md5加密
- * 
- * @author 作者 E-mail <a href="mailto:szg@51box.cn">石志刚</a>
- * @version 1.0.0
+ * @author Carter
+ * @date 2018/6/26 18:07
  */
 public class MD5Util {
-    private final static String[] hexDigits = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f" };
 
     /**
-     * 
-     * 转换字节数组为16进制字串
-     * 
-     * @param b
-     *            字节数组
-     * 
-     * @return 16进制字串
+     * 16进制的字符数组
      */
+    private final static String[] hexDigits = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d",
+            "e", "f"};
 
-    private static String byteArrayToHexString(byte[] b) {
-        StringBuffer resultSb = new StringBuffer();
-        for (int i = 0; i < b.length; i++) {
-            resultSb.append(byteToHexString(b[i]));
+    /**
+     * @param source    需要加密的原字符串
+     * @param encoding  指定编码类型
+     * @param uppercase 是否转为大写字符串
+     * @return
+     */
+    public static String MD5Encode(String source, String encoding, boolean uppercase) {
+        String result = null;
+        try {
+            result = source;
+            // 获得MD5摘要对象
+            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            // 使用指定的字节数组更新摘要信息
+            messageDigest.update(result.getBytes(encoding));
+            // messageDigest.digest()获得16位长度
+            result = byteArrayToHexString(messageDigest.digest());
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return resultSb.toString();
+        return uppercase ? result.toUpperCase() : result;
     }
 
+    /**
+     * 转换字节数组为16进制字符串
+     *
+     * @param bytes 字节数组
+     * @return
+     */
+    private static String byteArrayToHexString(byte[] bytes) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (byte tem : bytes) {
+            stringBuilder.append(byteToHexString(tem));
+        }
+        return stringBuilder.toString();
+    }
+
+    /**
+     * 转换byte到16进制
+     *
+     * @param b 要转换的byte
+     * @return 16进制对应的字符
+     */
     private static String byteToHexString(byte b) {
         int n = b;
-        if (n < 0) n = 256 + n;
+        if (n < 0) {
+            n = 256 + n;
+        }
         int d1 = n / 16;
         int d2 = n % 16;
         return hexDigits[d1] + hexDigits[d2];
-    }
-
-    public static String compile(String origin) {
-        String resultString = null;
-        try {
-            resultString = new String(origin);
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            resultString = byteArrayToHexString(md.digest(resultString.getBytes()));
-        }
-
-        catch (Exception ex) {
-
-        }
-
-        return resultString;
-
-    }
-
-    /**
-     * MD5 摘要计算(byte[]).
-     * 
-     * @param src
-     *            byte[]
-     * @throws Exception
-     * @return byte[] 16 bit digest
-     */
-    public static byte[] md5Digest(byte[] src) throws Exception {
-        MessageDigest alg = MessageDigest.getInstance("MD5"); // MD5 is 16 bit
-                                                              // message digest
-        return alg.digest(src);
-    }
-
-    /**
-     * MD5 摘要计算(String).
-     * 
-     * @param src
-     *            String
-     * @throws Exception
-     * @return String
-     */
-    public static String md5Digest(String src) throws Exception {
-        return byteArrayToHexString(md5Digest(src.getBytes()));
     }
 }
