@@ -113,6 +113,7 @@ public class Base64Util {
 			bytes[bytes.length - 1] = (byte) '=';
 
 			break;
+		default: break;
 		}
 
 		return new String(bytes);
