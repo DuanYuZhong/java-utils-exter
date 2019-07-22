@@ -47,7 +47,8 @@ public class RemarksCommentGenerator extends DefaultCommentGenerator {
 		topLevelClass.addJavaDocLine(" */");
 	}
 
-	public void addFieldComment(Field field, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
+	@Override
+    public void addFieldComment(Field field, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
 		field.addJavaDocLine("/**");
 
 		String remarks = introspectedColumn.getRemarks();
@@ -70,24 +71,28 @@ public class RemarksCommentGenerator extends DefaultCommentGenerator {
 		field.addJavaDocLine(" */");
 	}
 
+	@Override
 	public void addFieldComment(Field field, IntrospectedTable introspectedTable) {
 		field.addJavaDocLine("/**");
 		addJavadocTag(field, false);
 		field.addJavaDocLine(" */");
 	}
 
+	@Override
 	public void addGetterComment(Method method, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
 		method.addJavaDocLine("/**");
 		addJavadocTag(method, false);
 		method.addJavaDocLine(" */");
 	}
 
+	@Override
 	public void addSetterComment(Method method, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
 		method.addJavaDocLine("/**");
 		addJavadocTag(method, false);
 		method.addJavaDocLine(" */");
 	}
 
+	@Override
 	protected void addJavadocTag(JavaElement javaElement, boolean markAsDoNotDelete) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(" * ");
@@ -103,6 +108,7 @@ public class RemarksCommentGenerator extends DefaultCommentGenerator {
 		javaElement.addJavaDocLine(sb.toString());
 	}
 
+	@Override
 	protected String getDateString() {
 		return DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss");
 	}

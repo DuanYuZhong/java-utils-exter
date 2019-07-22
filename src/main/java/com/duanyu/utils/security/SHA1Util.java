@@ -105,14 +105,17 @@ public class SHA1Util {
     }  
  
     private static int sha1_ft(int t, int b, int c, int d) {  
-        if (t < 20)  
-            return (b & c) | ((~b) & d);  
+        if (t < 20) {
+            return (b & c) | ((~b) & d);
+        }
  
-        if (t < 40)  
-            return b ^ c ^ d;  
+        if (t < 40) {
+            return b ^ c ^ d;
+        }
  
-        if (t < 60)  
-            return (b & c) | (b & d) | (c & d);  
+        if (t < 60) {
+            return (b & c) | (b & d) | (c & d);
+        }
  
         return b ^ c ^ d;  
     }  
@@ -138,8 +141,9 @@ public class SHA1Util {
         }  
  
         int len = 0;  
-        for (int i = 0; i < tmp.length && tmp[i] != 0; i++, len++)  
-            ;  
+        for (int i = 0; i < tmp.length && tmp[i] != 0; i++, len++) {
+            ;
+        }
  
         int[] bin = new int[len];  
  
@@ -158,8 +162,9 @@ public class SHA1Util {
         }  
  
         int[] newbin = new int[size + 1];  
-        for (int i = 0; i < size; newbin[i] = 0, i++)  
-            ;  
+        for (int i = 0; i < size; newbin[i] = 0, i++) {
+            ;
+        }
  
         for (int i = 0; i < currlen; i++) {  
             newbin[i] = oldbin[i];  
