@@ -16,7 +16,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
         <commons.lang3.version>3.7</commons.lang3.version>
-        <guava.version>23.6-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <sl4j.version>1.7.25</sl4j.version>
         <jackson.version>2.8.11.2</jackson.version>
 	</properties>
